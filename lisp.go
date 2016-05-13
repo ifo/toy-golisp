@@ -15,14 +15,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	l, rest, err := Read(string(bts))
+	l, err := ReadAll(string(bts))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	fmt.Println(l)
-	fmt.Println(rest)
+	l.Print()
+	fmt.Println()
 }
 
 type LispVal interface {
@@ -57,6 +57,11 @@ func (p Pair) Print() {
 
 func (p Pair) Eval(env LispVal) LispVal {
 	return p.Head
+}
+
+func ReadAll(s string) (LispVal, error) {
+	lv, _, err := Read(s)
+	return lv, err
 }
 
 func Read(s string) (LispVal, string, error) {

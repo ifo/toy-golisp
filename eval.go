@@ -2,60 +2,16 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
-func main() {
-	bts, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		os.Exit(1)
-	}
-
-	l, err := ReadAll(string(bts))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	l.Print()
-	fmt.Println()
-}
-
-type LispVal interface {
-	Print()
-	Eval(LispVal) LispVal
-}
-
-type Number int
-
-func (n Number) Print() {
-	fmt.Print(n)
-}
-
-func (n Number) Eval(env LispVal) LispVal {
+func (n *Number) Eval(env LispVal) LispVal {
 	return n
 }
 
-type Pair struct {
-	Head LispVal
-	Tail LispVal
-}
-
-func (p Pair) Print() {
-	fmt.Print("(")
-	p.Head.Print()
-	if p.Tail != nil {
-		fmt.Print(" . ")
-		p.Tail.Print()
-	}
-	fmt.Print(")")
-}
-
-func (p Pair) Eval(env LispVal) LispVal {
+func (p *Pair) Eval(env LispVal) LispVal {
 	return p.Head
 }
 
@@ -93,7 +49,7 @@ func Read(s string) (LispVal, string, error) {
 			Tail: tail,
 		}
 
-		return lVal, rem[1:], nil
+		return &lVal, rem[1:], nil
 	}
 
 	i := len(s)
@@ -110,5 +66,5 @@ func Read(s string) (LispVal, string, error) {
 	}
 	var lVal Number = Number(num)
 
-	return lVal, s[i:], nil
+	return &lVal, s[i:], nil
 }

@@ -52,6 +52,18 @@ func Read(s string) (LispVal, string, error) {
 		return &lVal, rem[1:], nil
 	}
 
+	// start trying for atoms
+	lVal, rest := ReadNumber(s)
+
+	// if no atom was found, error out
+	if lVal == nil {
+		return nil, "", fmt.Errorf("unprocessable entity %s", strings.Fields(s)[0])
+	}
+
+	return lVal, rest, nil
+}
+
+func ReadNumber(s string) (LispVal, string) {
 	i := len(s)
 	for j, c := range s {
 		if !unicode.IsDigit(c) {
@@ -62,9 +74,8 @@ func Read(s string) (LispVal, string, error) {
 
 	num, err := strconv.Atoi(s[:i])
 	if err != nil {
-		return nil, "", err
+		return nil, s
 	}
 	var lVal Number = Number(num)
-
-	return &lVal, s[i:], nil
+	return &lVal, s[i:]
 }

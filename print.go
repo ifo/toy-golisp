@@ -8,6 +8,10 @@ func (n *Number) Print() {
 	fmt.Print(*n)
 }
 
+func (s *String) Print() {
+	fmt.Printf("%q", *s)
+}
+
 func (p *Pair) Print() {
 	fmt.Print("(")
 	p.Head.Print()

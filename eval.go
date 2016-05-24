@@ -11,6 +11,10 @@ func (n *Number) Eval(env LispVal) LispVal {
 	return n
 }
 
+func (s *String) Eval(env LispVal) LispVal {
+	return s
+}
+
 func (p *Pair) Eval(env LispVal) LispVal {
 	return p.Head
 }
@@ -54,6 +58,9 @@ func Read(s string) (LispVal, string, error) {
 
 	// start trying for atoms
 	lVal, rest := ReadNumber(s)
+	if lVal == nil {
+		lVal, rest = ReadString(s)
+	}
 
 	// if no atom was found, error out
 	if lVal == nil {
@@ -78,4 +85,20 @@ func ReadNumber(s string) (LispVal, string) {
 	}
 	var lVal Number = Number(num)
 	return &lVal, s[i:]
+}
+
+func ReadString(s string) (LispVal, string) {
+	if s[0] != '"' {
+		return nil, s
+	}
+	end := 1
+	for i, r := range s[1:] {
+		if r == '"' {
+			end += i
+			break
+		}
+	}
+
+	var lVal String = String(s[1:end])
+	return &lVal, s[end+1:]
 }

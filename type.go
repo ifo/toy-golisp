@@ -6,6 +6,7 @@ type LispVal interface {
 }
 
 type Number int
+type String string
 
 type Pair struct {
 	Head LispVal
